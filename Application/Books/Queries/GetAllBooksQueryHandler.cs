@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Application.Books.Queries
 {
-    //public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, List<Book>>
-    //{
-    //    //private readonly FakeDatabase _database;
-    //    //public GetAllBooksQueryHandler(FakeDatabase database)
-    //    //{
-    //    //    _database = database;
-    //    //}
+    public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, List<Book>>
+    {
+        private readonly FakeDatabase _database;
+        public GetAllBooksQueryHandler(FakeDatabase database)
+        {
+            _database = database;
+        }
 
-    //    //public Task<List<Book>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
-    //    //{
-    //    //    List<Book> books = _database.Books;
-    //    //    return Task.FromResult(books);
-    //    //}
-    //}
+        public Task<List<Book>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
+        {
+            List<Book> books = _database.Books;
+            return Task.FromResult(books);
+        }
+    }
 }

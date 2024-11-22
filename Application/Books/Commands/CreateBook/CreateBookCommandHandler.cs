@@ -1,15 +1,10 @@
 ﻿using Domain.Models;
 using Infrastructure.Data;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Books.Commands.CreateBook
 {
-    public class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, Book>
+    public class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, bool>
     {
         private readonly FakeDatabase _database;
 
@@ -18,27 +13,21 @@ namespace Application.Books.Commands.CreateBook
             _database = database;
         }
 
-        public Task<Book> Handle(CreateBookCommand command, CancellationToken cancellationToken)
+        public Task<bool> Handle(CreateBookCommand command, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(command.book.Title))
-            {
-                throw new ArgumentException("Title cannot be empty.");
-            }
-
-            if (!_database.Authors.Exists(x => x.Id == command.book.AuthorId))
-            {
-                throw new ArgumentException("Author does not exists.");
-            }
+            if (string.IsNullOrEmpty(command.book.Title) || 
+                !_database.Authors.Exists(x => x.Id == command.book.AuthorId))
+                return Task.FromResult(false);
 
             Book book = new()
             {
-                Id = command.book.Id = _database.Books.Max(x => x.Id) + 1,
+                Id = _database.Books.Max(x => x.Id) + 1,
                 Title = command.book.Title,
                 AuthorId = command.book.AuthorId
             };
-
             _database.Books.Add(book);
-            return Task.FromResult(book);
+
+            return Task.FromResult(true);
         }
     }
 }

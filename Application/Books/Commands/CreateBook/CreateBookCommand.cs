@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Application.Dtos;
+using Domain.Models;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,5 +9,5 @@ using System.Threading.Tasks;
 
 namespace Application.Books.Commands.CreateBook
 {
-    public record CreateBookCommand(Book book) : IRequest<Book>;
+    public record CreateBookCommand(BookDto book) : IRequest<bool>;
 }
