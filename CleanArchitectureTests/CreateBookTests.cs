@@ -1,5 +1,5 @@
 ﻿using Application.Books.Commands.CreateBook;
-using Domain.Models;
+using Application.Dtos;
 using Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -24,10 +24,10 @@ namespace CleanArchitectureTests
         }
 
         [Fact]
-        public void ShouldCreateBookInDatabase_ReturnsBook()
+        public async Task ShouldCreateBookInDatabase_ReturnsTrue()
         {
             // Arrange
-            var testBook = new Book 
+            var testBook = new BookDto 
             { 
                 Title = "Test Book",
                 AuthorId = 1 
@@ -36,13 +36,48 @@ namespace CleanArchitectureTests
             
 
             // Act
-            _commandHandler.Handle(command, _cancellationToken);
-            var actualBook = _database.Books.FirstOrDefault(x => x.Id == testBook.Id);
+            bool result = await _commandHandler.Handle(command, _cancellationToken);
+            var title = _database.Books[_database.Books.Count - 1].Title;
 
             // Assert
-            Assert.Equal(testBook.Id, actualBook.Id);
-            Assert.Equal(testBook.Title, actualBook.Title);
-            Assert.Equal(testBook.AuthorId, actualBook.AuthorId);
+            Assert.True(result);
+            Assert.Equal(testBook.Title, title);
+        }
+
+        [Fact]
+        public async Task Handle_EmptyTitle_ReturnFalse()
+        {
+            // Arrange
+            var testBook = new BookDto
+            {
+                Title = "",
+                AuthorId = 1
+            };
+            var command = new CreateBookCommand(testBook);
+
+            // Act
+            bool result = await _commandHandler.Handle(command, _cancellationToken);
+
+            // Assert
+            Assert.True(!result);
+        }
+
+        [Fact]
+        public async Task Handle_AuthorNotExists_ReturnFalse()
+        {
+            // Arrange
+            var testBook = new BookDto
+            {
+                Title = "Test book",
+                AuthorId = 0
+            };
+            var command = new CreateBookCommand(testBook);
+
+            // Act
+            bool result = await _commandHandler.Handle(command, _cancellationToken);
+
+            // Assert
+            Assert.True(!result);
         }
     }
 }
