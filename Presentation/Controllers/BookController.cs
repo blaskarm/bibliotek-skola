@@ -2,8 +2,9 @@
 using MediatR;
 using Domain.Models;
 using Application.Books.Commands.CreateBook;
+using Application.Books.Queries;
+using Application.Dtos;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Presentation.Controllers
 {
@@ -20,23 +21,27 @@ namespace Presentation.Controllers
 
         // GET: api/<BookController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            return Ok(await _mediator.Send(new GetAllBooksQuery()));
         }
 
         // GET api/<BookController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            return Ok(await _mediator.Send(new GetBookByIdQuery(id)));
         }
 
         // POST api/<BookController>
         [HttpPost]
-        public async void Post([FromBody] Book bookToAdd)
+        public async Task<IActionResult> Post([FromBody] BookDto bookToAdd)
         {
-            await _mediator.Send(new CreateBookCommand(bookToAdd));
+            bool result = await _mediator.Send(new CreateBookCommand(bookToAdd));
+            if (!result)
+                return BadRequest();
+
+            return Ok();
         }
 
         // PUT api/<BookController>/5
