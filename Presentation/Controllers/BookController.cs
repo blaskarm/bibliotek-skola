@@ -4,6 +4,9 @@ using Domain.Models;
 using Application.Books.Commands.CreateBook;
 using Application.Books.Queries;
 using Application.Dtos;
+using Application.Books.Commands.UpdateBook;
+using Application.Books.Queries.GetBooks;
+using Application.Books.Commands.DeleteBook;
 
 
 namespace Presentation.Controllers
@@ -46,14 +49,24 @@ namespace Presentation.Controllers
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] BookDto bookToAdd)
         {
+            bool result = await _mediator.Send(new UpdateBookCommand(id, bookToAdd));
+            if (!result)
+                return BadRequest();
+
+            return Ok();
         }
 
         // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            bool result = await _mediator.Send(new DeleteBookCommand(id));
+            if (!result)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }
