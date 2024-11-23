@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Authors\" />
     <Folder Include="Utilities\" />
   </ItemGroup>
 
