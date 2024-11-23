@@ -26,9 +26,9 @@ namespace Presentation.Controllers
 
         // GET api/<AuthorController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            return Ok(await _mediator.Send(new GetAuthorByIdQuery(id)));
         }
 
         // POST api/<AuthorController>
