@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanArchitectureTests
+namespace CleanArchitectureTests.BookTests
 {
     public class CreateBookTests
     {
@@ -27,21 +27,22 @@ namespace CleanArchitectureTests
         public async Task ShouldCreateBookInDatabase_ReturnsTrue()
         {
             // Arrange
-            var testBook = new BookDto 
-            { 
+            var testBook = new BookDto
+            {
                 Title = "Test Book",
-                AuthorId = 1 
+                AuthorId = 1
             };
             var command = new CreateBookCommand(testBook);
-            
+
 
             // Act
             bool result = await _commandHandler.Handle(command, _cancellationToken);
-            var title = _database.Books[_database.Books.Count - 1].Title;
+            var actualBook = _database.Books[_database.Books.Count - 1];
 
             // Assert
             Assert.True(result);
-            Assert.Equal(testBook.Title, title);
+            Assert.Equal(actualBook.Title, testBook.Title);
+            Assert.Equal(actualBook.AuthorId, testBook.AuthorId);
         }
 
         [Fact]
