@@ -1,4 +1,6 @@
-﻿using Application.Authors.Queries;
+﻿using Application.Authors.Commands.CreateAuthor;
+using Application.Authors.Queries;
+using Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,8 +35,13 @@ namespace Presentation.Controllers
 
         // POST api/<AuthorController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] AuthorDto author)
         {
+            bool result = await _mediator.Send(new CreateAuthorCommand(author));
+            if (!result)
+                return BadRequest();
+
+            return Ok();
         }
 
         // PUT api/<AuthorController>/5
