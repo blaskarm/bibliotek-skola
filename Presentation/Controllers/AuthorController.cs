@@ -1,4 +1,5 @@
 ﻿using Application.Authors.Commands.CreateAuthor;
+using Application.Authors.Commands.UpdateAuthor;
 using Application.Authors.Queries;
 using Application.Dtos;
 using MediatR;
@@ -46,8 +47,13 @@ namespace Presentation.Controllers
 
         // PUT api/<AuthorController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] AuthorDto author)
         {
+            bool result = await _mediator.Send(new UpdateAuthorCommand(id, author));
+            if (!result)
+                return BadRequest();
+
+            return Ok();
         }
 
         // DELETE api/<AuthorController>/5
