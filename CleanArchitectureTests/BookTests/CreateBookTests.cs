@@ -60,7 +60,7 @@ namespace CleanArchitectureTests.BookTests
             bool result = await _commandHandler.Handle(command, _cancellationToken);
 
             // Assert
-            Assert.True(!result);
+            Assert.False(result);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace CleanArchitectureTests.BookTests
             bool result = await _commandHandler.Handle(command, _cancellationToken);
 
             // Assert
-            Assert.True(!result);
+            Assert.False(result);
         }
     }
 }
