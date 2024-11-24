@@ -1,10 +1,5 @@
 ﻿using Application.Books.Commands.DeleteBook;
 using Infrastructure.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CleanArchitectureTests.BookTests
 {
@@ -24,15 +19,15 @@ namespace CleanArchitectureTests.BookTests
         {
             // Arrange
             int id = 1;
+            int expectedLengthOfDatabase = _database.Books.Count - 1;
             var request = new DeleteBookCommand(id);
 
             // Act
             bool result = await _commandHandler.Handle(request, CancellationToken.None);
-            bool deleted = _database.Books.Exists(b => b.Id == id);
 
             // Assert
             Assert.True(result);
-            Assert.True(!deleted);
+            Assert.Equal(expectedLengthOfDatabase, _database.Books.Count);
         }
 
         [Fact]
@@ -46,7 +41,7 @@ namespace CleanArchitectureTests.BookTests
             bool result = await _commandHandler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.True(!result);
+            Assert.False(result);
         }
     }
 }

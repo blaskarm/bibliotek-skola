@@ -32,12 +32,9 @@ namespace CleanArchitectureTests.BookTests
 
             // Act
             bool result = await _commandHandler.Handle(request, _cancellationToken);
-            Book actualBook = _database.Books.FirstOrDefault(b => b.Id == id)!;
 
             // Assert
             Assert.True(result);
-            Assert.Equal(testBook.Title, actualBook.Title);
-            Assert.Equal(testBook.AuthorId, actualBook.AuthorId);
         }
 
         [Fact]

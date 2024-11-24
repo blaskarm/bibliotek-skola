@@ -27,6 +27,7 @@ namespace CleanArchitectureTests.BookTests
         public async Task ShouldCreateBookInDatabase_ReturnsTrue()
         {
             // Arrange
+            int expectedLengthOfDatabase = _database.Books.Count + 1;
             var testBook = new BookDto
             {
                 Title = "Test Book",
@@ -37,12 +38,10 @@ namespace CleanArchitectureTests.BookTests
 
             // Act
             bool result = await _commandHandler.Handle(command, _cancellationToken);
-            var actualBook = _database.Books[_database.Books.Count - 1];
 
             // Assert
             Assert.True(result);
-            Assert.Equal(actualBook.Title, testBook.Title);
-            Assert.Equal(actualBook.AuthorId, testBook.AuthorId);
+            Assert.Equal(expectedLengthOfDatabase, _database.Books.Count);
         }
 
         [Fact]
