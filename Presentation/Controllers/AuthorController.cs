@@ -1,4 +1,5 @@
 ﻿using Application.Authors.Commands.CreateAuthor;
+using Application.Authors.Commands.DeleteAuthor;
 using Application.Authors.Commands.UpdateAuthor;
 using Application.Authors.Queries;
 using Application.Dtos;
@@ -58,8 +59,13 @@ namespace Presentation.Controllers
 
         // DELETE api/<AuthorController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            bool result = await _mediator.Send(new DeleteAuthorCommand(id));
+            if (!result)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }
