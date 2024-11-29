@@ -1,26 +1,16 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Books.Queries.GetBooks
 {
-    public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, Book>
+    public class GetBookByIdQueryHandler(IFakeDatabase database) : IRequestHandler<GetBookByIdQuery, Book>
     {
-        private readonly FakeDatabase _database;
-
-        public GetBookByIdQueryHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<Book> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
-            Book book = _database.Books.FirstOrDefault(b => b.Id == request.id)!;
+            Book book = _database.Books.FirstOrDefault(b => b.Id == request.Id)!;
             return Task.FromResult(book);
         }
     }

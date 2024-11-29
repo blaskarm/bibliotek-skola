@@ -1,21 +1,13 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Books.Queries.GetBooks
 {
-    public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, List<Book>>
+    public class GetAllBooksQueryHandler(IFakeDatabase database) : IRequestHandler<GetAllBooksQuery, List<Book>>
     {
-        private readonly FakeDatabase _database;
-        public GetAllBooksQueryHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
+        //private readonly IBookRepository _repository = repository;
 
         public Task<List<Book>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {

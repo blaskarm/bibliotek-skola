@@ -1,25 +1,15 @@
-﻿using Infrastructure.Data;
+﻿using Application.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Authors.Commands.DeleteAuthor
 {
-    public class DeleteAuthorCommandHandler : IRequestHandler<DeleteAuthorCommand, bool>
+    public class DeleteAuthorCommandHandler(IFakeDatabase database) : IRequestHandler<DeleteAuthorCommand, bool>
     {
-        private readonly FakeDatabase _database;
-
-        public DeleteAuthorCommandHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<bool> Handle(DeleteAuthorCommand request, CancellationToken cancellationToken)
         {
-            int index = _database.Authors.FindIndex(a => a.Id == request.id);
+            int index = _database.Authors.FindIndex(a => a.Id == request.Id);
 
             if (index < 0)
                 return Task.FromResult(false);

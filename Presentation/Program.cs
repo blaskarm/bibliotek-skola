@@ -75,7 +75,8 @@ namespace Presentation
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddApplication().AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection")!);
+            builder.Services.AddApplication();
+            builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("DefaultConnection")!);
 
             var app = builder.Build();
 

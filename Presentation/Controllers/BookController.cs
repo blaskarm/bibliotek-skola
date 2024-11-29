@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using Domain.Models;
 using Application.Books.Commands.CreateBook;
-using Application.Books.Queries;
 using Application.Dtos;
 using Application.Books.Commands.UpdateBook;
 using Application.Books.Queries.GetBooks;

@@ -1,30 +1,20 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Users.Commands.CreateUser
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, bool>
+    public class CreateUserCommandHandler(IFakeDatabase database) : IRequestHandler<CreateUserCommand, bool>
     {
-        private readonly FakeDatabase _database;
-
-        public CreateUserCommandHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             User newUser = new()
             {
                 Id = _database.Users.Max(u => u.Id) + 1,
-                UserName = request.user.UserName,
-                Password = request.user.Password
+                UserName = request.User.UserName,
+                Password = request.User.Password
             };
 
             _database.Users.Add(newUser);

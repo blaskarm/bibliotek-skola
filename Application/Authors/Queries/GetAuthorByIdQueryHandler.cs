@@ -1,26 +1,16 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Authors.Queries
 {
-    public class GetAuthorByIdQueryHandler : IRequestHandler<GetAuthorByIdQuery, Author>
+    public class GetAuthorByIdQueryHandler(IFakeDatabase database) : IRequestHandler<GetAuthorByIdQuery, Author>
     {
-        private readonly FakeDatabase _database;
-
-        public GetAuthorByIdQueryHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<Author> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
         {
-            Author author = _database.Authors.FirstOrDefault(a => a.Id == request.id)!;
+            Author author = _database.Authors.FirstOrDefault(a => a.Id == request.Id)!;
             return Task.FromResult(author);
         }
     }
