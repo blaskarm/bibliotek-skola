@@ -1,32 +1,22 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Authors.Commands.CreateAuthor
 {
-    public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, bool>
+    public class CreateAuthorCommandHandler(IFakeDatabase database) : IRequestHandler<CreateAuthorCommand, bool>
     {
-        private readonly FakeDatabase _database;
-
-        public CreateAuthorCommandHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<bool> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.author.Name))
+            if (string.IsNullOrEmpty(request.Author.Name))
                 return Task.FromResult(false);
 
             var newAuthor = new Author
             {
                 Id = _database.Authors.Max(x => x.Id) + 1,
-                Name = request.author.Name
+                Name = request.Author.Name
             };
 
             _database.Authors.Add(newAuthor);

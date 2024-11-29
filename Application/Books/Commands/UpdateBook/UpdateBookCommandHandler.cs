@@ -1,38 +1,28 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Books.Commands.UpdateBook
 {
-    public class UpdateBookCommandHandler : IRequestHandler<UpdateBookCommand, bool>
+    public class UpdateBookCommandHandler(IFakeDatabase database) : IRequestHandler<UpdateBookCommand, bool>
     {
-        private readonly FakeDatabase _database;
-
-        public UpdateBookCommandHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<bool> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
         {
-            Book book = _database.Books.FirstOrDefault(b => b.Id == request.id)!;
+            Book book = _database.Books.FirstOrDefault(b => b.Id == request.Id)!;
 
             if (book == null)
                 return Task.FromResult(false);
 
-            if (string.IsNullOrEmpty(request.book.Title))
+            if (string.IsNullOrEmpty(request.Book.Title))
                 return Task.FromResult(false);
 
-            if (!_database.Authors.Exists(a => a.Id == request.book.AuthorId))
+            if (!_database.Authors.Exists(a => a.Id == request.Book.AuthorId))
                 return Task.FromResult(false);
 
-            book.Title = request.book.Title;
-            book.AuthorId = request.book.AuthorId;
+            book.Title = request.Book.Title;
+            book.AuthorId = request.Book.AuthorId;
             
             return Task.FromResult(true);
         }

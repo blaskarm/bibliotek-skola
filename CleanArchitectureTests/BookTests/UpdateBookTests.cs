@@ -1,6 +1,5 @@
 ﻿using Application.Books.Commands.UpdateBook;
 using Application.Dtos;
-using Domain.Models;
 using Infrastructure.Data;
 
 namespace CleanArchitectureTests.BookTests

@@ -1,19 +1,14 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Users.Queries.GetAllUsers
 {
     public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<User>>
     {
-        private readonly FakeDatabase _database;
+        private readonly IFakeDatabase _database;
 
-        public GetAllUsersQueryHandler(FakeDatabase database)
+        public GetAllUsersQueryHandler(IFakeDatabase database)
         {
             _database = database;
         }

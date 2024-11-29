@@ -1,13 +1,9 @@
-﻿using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Interfaces;
+using Domain.Models;
 
 namespace Infrastructure.Data
 {
-    public class FakeDatabase
+    public class FakeDatabase : IFakeDatabase
     {
         private List<Book> books =
         [

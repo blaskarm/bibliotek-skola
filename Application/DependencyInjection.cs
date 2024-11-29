@@ -11,7 +11,6 @@ namespace Application
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(assembly));
 
             services.AddScoped<TokenHelper>();
-            //services.AddValidatorsFromAssembly(assembly);
 
             return services;
         }

@@ -1,22 +1,12 @@
-﻿using Domain.Models;
-using Infrastructure.Data;
+﻿using Application.Interfaces;
+using Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Authors.Queries
 {
-    public class GetAllAuthorsQueryHandler : IRequestHandler<GetAllAuthorsQuery, List<Author>>
+    public class GetAllAuthorsQueryHandler(IFakeDatabase database) : IRequestHandler<GetAllAuthorsQuery, List<Author>>
     {
-        private readonly FakeDatabase _database;
-
-        public GetAllAuthorsQueryHandler(FakeDatabase database)
-        {
-            _database = database;
-        }
+        private readonly IFakeDatabase _database = database;
 
         public Task<List<Author>> Handle(GetAllAuthorsQuery request, CancellationToken cancellationToken)
         {
