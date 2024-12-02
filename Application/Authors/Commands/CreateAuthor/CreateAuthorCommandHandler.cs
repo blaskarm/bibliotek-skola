@@ -1,27 +1,31 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Application.Utilities;
 using Domain.Models;
 using MediatR;
 
 namespace Application.Authors.Commands.CreateAuthor
 {
-    public class CreateAuthorCommandHandler(IFakeDatabase database) : IRequestHandler<CreateAuthorCommand, bool>
+    public class CreateAuthorCommandHandler(IAuthorRepository repository) : IRequestHandler<CreateAuthorCommand, Result<AuthorDto>>
     {
-        private readonly IFakeDatabase _database = database;
+        private readonly IAuthorRepository _repository = repository;
 
-        public Task<bool> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AuthorDto>> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(request.Author.Name))
-                return Task.FromResult(false);
+                return Result<AuthorDto>.Failure("Author name cannot be null or empty");
+
+            if (await _repository.AuthorExists(request.Author.Name))
+                return Result<AuthorDto>.Failure("Author already exists");
 
             var newAuthor = new Author
             {
-                Id = _database.Authors.Max(x => x.Id) + 1,
                 Name = request.Author.Name
             };
 
-            _database.Authors.Add(newAuthor);
-            
-            return Task.FromResult(true);
+            await _repository.AddAsync(newAuthor);
+
+            return Result<AuthorDto>.Success(request.Author, "Author successfully added to database");
         }
     }
 }
