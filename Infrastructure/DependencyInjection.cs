@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Domain.Models;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,13 @@ namespace Infrastructure
             {
                 options.UseSqlServer(connectionString);
             });
+
+            services.AddScoped<IRepository<Author>, Repository<Author>>();
+            //        .AddScoped<IRepository<Book>, Repository<Book>>()
+            //        .AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            //services.AddScoped<IRepository<Book>, Repository<Book>>();
+            //services.AddScoped<IRepository<User>, Repository<User>>();
 
             return services;
         }

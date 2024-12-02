@@ -3,6 +3,7 @@ using Application.Authors.Commands.DeleteAuthor;
 using Application.Authors.Commands.UpdateAuthor;
 using Application.Authors.Queries;
 using Application.Dtos;
+using Application.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,14 +13,9 @@ namespace Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorController : ControllerBase
+    public class AuthorController(IMediator mediator) : ControllerBase
     {
-        private readonly IMediator _mediator;
-
-        public AuthorController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        private readonly IMediator _mediator = mediator;
 
         // GET: api/<AuthorController>
         [HttpGet]
@@ -39,22 +35,22 @@ namespace Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AuthorDto author)
         {
-            bool result = await _mediator.Send(new CreateAuthorCommand(author));
-            if (!result)
-                return BadRequest();
+            Result<AuthorDto> result = await _mediator.Send(new CreateAuthorCommand(author));
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
 
-            return Ok();
+            return Ok($"({result.Data.Name}) {result.Message}");
         }
 
         // PUT api/<AuthorController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] AuthorDto author)
         {
-            bool result = await _mediator.Send(new UpdateAuthorCommand(id, author));
-            if (!result)
-                return BadRequest();
+            Result<AuthorDto> result = await _mediator.Send(new UpdateAuthorCommand(id, author));
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
 
-            return Ok();
+            return Ok($"({result.Data.Name}) {result.Message}");
         }
 
         // DELETE api/<AuthorController>/5
