@@ -8,7 +8,7 @@ namespace Application.Dtos
 {
     public class BookDto
     {
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
         public int AuthorId { get; set; }
     }
 }
