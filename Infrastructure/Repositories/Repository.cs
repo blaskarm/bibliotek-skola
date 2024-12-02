@@ -45,7 +45,7 @@ namespace Infrastructure.Repositories
 
         public async Task<T> FindAsync(int id)
         {
-            return await _dbSet.FindAsync(id)!;
+            return await _dbSet.FindAsync(id) ?? null!;
         }
     }
 }
