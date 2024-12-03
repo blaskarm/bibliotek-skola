@@ -1,4 +1,7 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
 namespace Domain.Models
 {
     public class Author

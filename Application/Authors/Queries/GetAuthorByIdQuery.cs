@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Application.Utilities;
+using Domain.Models;
 using MediatR;
 
 namespace Application.Authors.Queries
