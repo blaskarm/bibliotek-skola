@@ -1,22 +1,22 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Application.Utilities;
 using MediatR;
 
 namespace Application.Authors.Commands.DeleteAuthor
 {
-    public class DeleteAuthorCommandHandler(IFakeDatabase database) : IRequestHandler<DeleteAuthorCommand, bool>
+    public class DeleteAuthorCommandHandler(IAuthorRepository repository) : IRequestHandler<DeleteAuthorCommand, Result<AuthorDto>>
     {
-        private readonly IFakeDatabase _database = database;
+        private readonly IAuthorRepository _repository = repository;
 
-        public Task<bool> Handle(DeleteAuthorCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AuthorDto>> Handle(DeleteAuthorCommand request, CancellationToken cancellationToken)
         {
-            int index = _database.Authors.FindIndex(a => a.Id == request.Id);
+            bool success = await _repository.DeleteAsync(request.Id);
 
-            if (index < 0)
-                return Task.FromResult(false);
+            if (!success)
+                return Result<AuthorDto>.Failure("Author not found");
 
-            _database.Authors.RemoveAt(index);
-
-            return Task.FromResult(true);
+            return Result<AuthorDto>.Success(null!, "Successfully deleted author");
         }
     }
 }

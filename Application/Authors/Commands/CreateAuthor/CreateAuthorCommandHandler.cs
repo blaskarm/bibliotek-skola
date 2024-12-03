@@ -12,9 +12,6 @@ namespace Application.Authors.Commands.CreateAuthor
 
         public async Task<Result<AuthorDto>> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.Author.Name))
-                return Result<AuthorDto>.Failure("Author name cannot be null or empty");
-
             if (await _repository.AuthorExists(request.Author.Name))
                 return Result<AuthorDto>.Failure("Author already exists");
 

@@ -28,6 +28,10 @@ namespace Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            var author = await _mediator.Send(new GetAuthorByIdQuery(id));
+            if (author is null)
+                return NotFound("Author not found");
+
             return Ok(await _mediator.Send(new GetAuthorByIdQuery(id)));
         }
 
@@ -57,11 +61,11 @@ namespace Presentation.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool result = await _mediator.Send(new DeleteAuthorCommand(id));
-            if (!result)
-                return BadRequest();
+            Result<AuthorDto> result = await _mediator.Send(new DeleteAuthorCommand(id));
+            if (!result.IsSuccess)
+                return NotFound(result.Message);
 
-            return Ok();
+            return Ok(result.Message);
         }
     }
 }

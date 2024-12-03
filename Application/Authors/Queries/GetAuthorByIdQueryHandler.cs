@@ -4,14 +4,19 @@ using MediatR;
 
 namespace Application.Authors.Queries
 {
-    public class GetAuthorByIdQueryHandler(IFakeDatabase database) : IRequestHandler<GetAuthorByIdQuery, Author>
+    public class GetAuthorByIdQueryHandler(IFakeDatabase database, IAuthorRepository repository) : IRequestHandler<GetAuthorByIdQuery, Author>
     {
         private readonly IFakeDatabase _database = database;
+        private readonly IAuthorRepository _repository = repository;
 
-        public Task<Author> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Author> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
         {
-            Author author = _database.Authors.FirstOrDefault(a => a.Id == request.Id)!;
-            return Task.FromResult(author);
+            Author author = await _repository.GetByIdAsync(request.Id);
+
+            if (author is null)
+                return null!;
+
+            return author;
         }
     }
 }
