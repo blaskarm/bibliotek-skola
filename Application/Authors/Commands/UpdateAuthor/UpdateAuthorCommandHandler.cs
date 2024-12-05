@@ -24,8 +24,7 @@ namespace Application.Authors.Commands.UpdateAuthor
             author.Name = request.Author.Name;
             await _repository.UpdateAsync(request.Id, author);
 
-            AuthorDto authorDto = request.Author;
-            return Result<AuthorDto>.Success(authorDto, "Author successfully updated.");
+            return Result<AuthorDto>.Success(request.Author, "Author successfully updated.");
         }
     }
 }

@@ -1,29 +1,33 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Application.Utilities;
 using Domain.Models;
 using MediatR;
 
 namespace Application.Books.Commands.CreateBook
 {
-    public class CreateBookCommandHandler(IFakeDatabase database) : IRequestHandler<CreateBookCommand, bool>
+    public class CreateBookCommandHandler(IBookRepository bookRepository, IAuthorRepository authorRepository) : IRequestHandler<CreateBookCommand, Result<BookDto>>
     {
-        private readonly IFakeDatabase _database = database;
+        private readonly IBookRepository _bookRepository = bookRepository;
+        private readonly IAuthorRepository _authorRepository = authorRepository;
 
-        public async Task<bool> Handle(CreateBookCommand command, CancellationToken cancellationToken)
+        public async Task<Result<BookDto>> Handle(CreateBookCommand command, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(command.Book.Title) ||
-                !_database.Authors.Exists(x => x.Id == command.Book.AuthorId))
-                return await Task.FromResult(false);
+            if (await _authorRepository.FindAsync(command.Book.AuthorId) is null)
+                return Result<BookDto>.Failure("The author id does not exists in the database");
+
+            if (await _bookRepository.BookTitleExists(command.Book.Title))
+                return Result<BookDto>.Failure("The book title already exists in the database");
 
             Book book = new()
             {
-                Id = _database.Books.Max(x => x.Id) + 1,
                 Title = command.Book.Title,
                 AuthorId = command.Book.AuthorId
             };
 
-            _database.Books.Add(book);
+            await _bookRepository.AddAsync(book);
 
-            return await Task.FromResult(true);
+            return Result<BookDto>.Success(command.Book, "Book successfully added to the database");
         }
     }
 }

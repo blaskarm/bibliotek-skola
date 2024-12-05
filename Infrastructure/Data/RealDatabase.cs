@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class RealDatabase : DbContext
+    public class RealDatabase(DbContextOptions<RealDatabase> options) : DbContext(options)
     {
-        public RealDatabase(DbContextOptions<RealDatabase> options) : base(options) { }
-
-        public DbSet<Book> Books { get; set; }
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Book> Books { get; set; } = null!;
+        public DbSet<Author> Authors { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
     }
 }

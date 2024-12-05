@@ -19,11 +19,9 @@ namespace Infrastructure
             });
 
             services.AddScoped<IRepository<Author>, Repository<Author>>();
-            //        .AddScoped<IRepository<Book>, Repository<Book>>()
-            //        .AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IRepository<Book>, Repository<Book>>();
             services.AddScoped<IAuthorRepository, AuthorRepository>();
-            //services.AddScoped<IRepository<Book>, Repository<Book>>();
-            //services.AddScoped<IRepository<User>, Repository<User>>();
+            services.AddScoped<IBookRepository, BookRepository>();
 
             return services;
         }
