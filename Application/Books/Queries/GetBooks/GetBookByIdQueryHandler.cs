@@ -4,14 +4,14 @@ using MediatR;
 
 namespace Application.Books.Queries.GetBooks
 {
-    public class GetBookByIdQueryHandler(IFakeDatabase database) : IRequestHandler<GetBookByIdQuery, Book>
+    public class GetBookByIdQueryHandler(IBookRepository repository) : IRequestHandler<GetBookByIdQuery, Book>
     {
-        private readonly IFakeDatabase _database = database;
+        private readonly IBookRepository _repository = repository;
 
-        public Task<Book> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Book> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
-            Book book = _database.Books.FirstOrDefault(b => b.Id == request.Id)!;
-            return Task.FromResult(book);
+            Book book = await _repository.GetByIdAsync(request.Id);
+            return book is not null ? book : null!;
         }
     }
 }

@@ -1,30 +1,38 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Application.Utilities;
 using Domain.Models;
 using MediatR;
 
 namespace Application.Books.Commands.UpdateBook
 {
-    public class UpdateBookCommandHandler(IFakeDatabase database) : IRequestHandler<UpdateBookCommand, bool>
+    public class UpdateBookCommandHandler(IBookRepository bookRepository, IAuthorRepository authorRepository) : IRequestHandler<UpdateBookCommand, Result<BookDto>>
     {
-        private readonly IFakeDatabase _database = database;
+        private readonly IBookRepository _bookRepository = bookRepository;
+        private readonly IAuthorRepository _authorRepository = authorRepository;
 
-        public Task<bool> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BookDto>> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
         {
-            Book book = _database.Books.FirstOrDefault(b => b.Id == request.Id)!;
+            Book book = await _bookRepository.FindAsync(request.Id);
 
-            if (book == null)
-                return Task.FromResult(false);
+            if (book is null)
+                return Result<BookDto>.Failure("Book does not exists");
 
             if (string.IsNullOrEmpty(request.Book.Title))
-                return Task.FromResult(false);
+                return Result<BookDto>.Failure("Title cannot be empty");
 
-            if (!_database.Authors.Exists(a => a.Id == request.Book.AuthorId))
-                return Task.FromResult(false);
+            if (await _authorRepository.FindAsync(request.Book.AuthorId) is null)
+                return Result<BookDto>.Failure("The author id does not exists in the database");
+
+            if (await _bookRepository.BookTitleExists(request.Book.Title))
+                return Result<BookDto>.Failure("The book title already exists in the database");
 
             book.Title = request.Book.Title;
             book.AuthorId = request.Book.AuthorId;
-            
-            return Task.FromResult(true);
+
+            await _bookRepository.UpdateAsync(request.Id, book);
+
+            return Result<BookDto>.Success(request.Book, "Successfully updated book in database");
         }
     }
 }

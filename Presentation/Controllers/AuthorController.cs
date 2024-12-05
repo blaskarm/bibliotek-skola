@@ -29,10 +29,8 @@ namespace Presentation.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var author = await _mediator.Send(new GetAuthorByIdQuery(id));
-            if (author is null)
-                return NotFound("Author not found");
 
-            return Ok(await _mediator.Send(new GetAuthorByIdQuery(id)));
+            return author is not null ? Ok(author) : NotFound("Author not found");
         }
 
         // POST api/<AuthorController>
@@ -40,10 +38,8 @@ namespace Presentation.Controllers
         public async Task<IActionResult> Post([FromBody] AuthorDto author)
         {
             Result<AuthorDto> result = await _mediator.Send(new CreateAuthorCommand(author));
-            if (!result.IsSuccess)
-                return BadRequest(result.Message);
 
-            return Ok($"({result.Data.Name}) {result.Message}");
+            return result.IsSuccess ? Ok($"({result.Data.Name}) {result.Message}") : BadRequest(result.Message);
         }
 
         // PUT api/<AuthorController>/5
@@ -51,10 +47,8 @@ namespace Presentation.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] AuthorDto author)
         {
             Result<AuthorDto> result = await _mediator.Send(new UpdateAuthorCommand(id, author));
-            if (!result.IsSuccess)
-                return BadRequest(result.Message);
 
-            return Ok($"({result.Data.Name}) {result.Message}");
+            return result.IsSuccess ? Ok($"({result.Data.Name}) {result.Message}") : BadRequest(result.Message);
         }
 
         // DELETE api/<AuthorController>/5
@@ -62,10 +56,8 @@ namespace Presentation.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             Result<AuthorDto> result = await _mediator.Send(new DeleteAuthorCommand(id));
-            if (!result.IsSuccess)
-                return NotFound(result.Message);
 
-            return Ok(result.Message);
+            return result.IsSuccess ? Ok(result.Message) : NotFound(result.Message);
         }
     }
 }

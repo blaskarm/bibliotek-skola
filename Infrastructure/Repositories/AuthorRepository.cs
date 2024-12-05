@@ -1,5 +1,4 @@
-﻿
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Domain.Models;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +11,8 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> AuthorExists(string name)
         {
-            bool exists = await _context.Authors.AnyAsync(a => a.Name == name);
-            return exists;
+            //bool exists = await _context.Authors.AnyAsync(a => a.Name == name);
+            return await _context.Authors.AnyAsync(a => a.Name == name);
         }
     }
 }

@@ -5,6 +5,7 @@ using Application.Dtos;
 using Application.Books.Commands.UpdateBook;
 using Application.Books.Queries.GetBooks;
 using Application.Books.Commands.DeleteBook;
+using Application.Utilities;
 
 
 namespace Presentation.Controllers
@@ -31,40 +32,36 @@ namespace Presentation.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await _mediator.Send(new GetBookByIdQuery(id)));
+            var book = await _mediator.Send(new GetBookByIdQuery(id));
+
+            return book is not null ? Ok(book) : NotFound("Book not found.");
         }
 
         // POST api/<BookController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BookDto bookToAdd)
         {
-            bool result = await _mediator.Send(new CreateBookCommand(bookToAdd));
-            if (!result)
-                return BadRequest();
+            Result<BookDto> result = await _mediator.Send(new CreateBookCommand(bookToAdd));
 
-            return Ok();
+            return result.IsSuccess ? Ok($"({result.Data.Title}) {result.Message}") : BadRequest(result.Message);
         }
 
         // PUT api/<BookController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] BookDto bookToAdd)
         {
-            bool result = await _mediator.Send(new UpdateBookCommand(id, bookToAdd));
-            if (!result)
-                return BadRequest();
+            Result<BookDto> result = await _mediator.Send(new UpdateBookCommand(id, bookToAdd));
 
-            return Ok();
+            return result.IsSuccess ? Ok($"({result.Data.Title}) {result.Message}") : BadRequest(result.Message);
         }
 
         // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            bool result = await _mediator.Send(new DeleteBookCommand(id));
-            if (!result)
-                return BadRequest();
+            Result<BookDto> result = await _mediator.Send(new DeleteBookCommand(id));
 
-            return Ok();
+            return result.IsSuccess ? Ok(result.Message) : NotFound(result.Message);
         }
     }
 }

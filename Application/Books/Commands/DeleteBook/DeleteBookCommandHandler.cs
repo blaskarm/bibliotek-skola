@@ -1,22 +1,23 @@
-﻿using Application.Interfaces;
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Application.Utilities;
 using MediatR;
 
 namespace Application.Books.Commands.DeleteBook
 {
-    public class DeleteBookCommandHandler(IFakeDatabase database) : IRequestHandler<DeleteBookCommand, bool>
+    public class DeleteBookCommandHandler(IFakeDatabase database, IBookRepository repository) : IRequestHandler<DeleteBookCommand, Result<BookDto>>
     {
         private readonly IFakeDatabase _database = database;
+        private readonly IBookRepository _repository = repository;
 
-        public Task<bool> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BookDto>> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
         {
-            int index = _database.Books.FindIndex(x => x.Id == request.Id);
+            //bool success = await _repository.DeleteAsync(request.Id);
 
-            if (index < 0)
-                return Task.FromResult(false);
+            if (!await _repository.DeleteAsync(request.Id))
+                return Result<BookDto>.Failure("Book not found");
 
-            _database.Books.RemoveAt(index);
-
-            return Task.FromResult(true);
+            return Result<BookDto>.Success(null!, "Book successfully deleted");
         }
     }
 }

@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Application.Authors.Queries
 {
-    public class GetAllAuthorsQueryHandler(IRepository<Author> repository) : IRequestHandler<GetAllAuthorsQuery, List<Author>>
+    public class GetAllAuthorsQueryHandler(IAuthorRepository repository) : IRequestHandler<GetAllAuthorsQuery, List<Author>>
     {
-        private readonly IRepository<Author> _repository = repository;
+        private readonly IAuthorRepository _repository = repository;
 
         public async Task<List<Author>> Handle(GetAllAuthorsQuery request, CancellationToken cancellationToken)
         {
