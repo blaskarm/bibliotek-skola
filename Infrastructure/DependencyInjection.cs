@@ -18,10 +18,9 @@ namespace Infrastructure
                 options.UseSqlServer(connectionString);
             });
 
-            services.AddScoped<IRepository<Author>, Repository<Author>>();
-            services.AddScoped<IRepository<Book>, Repository<Book>>();
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
-            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>()
+                .AddScoped<IBookRepository, BookRepository>()
+                .AddScoped<IUserRepository, UserRepository>();
 
             return services;
         }

@@ -1,6 +1,9 @@
 ﻿using Application.Dtos;
 using Application.Users.Commands.CreateUser;
+using Application.Users.Commands.DeleteUser;
+using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetAllUsers;
+using Application.Users.Queries.GetUserById;
 using Application.Users.Queries.Login;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +24,59 @@ namespace Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _mediator.Send(new GetAllUsersQuery()));
+            try
+            {
+                return Ok(await _mediator.Send(new GetAllUsersQuery()));
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            try
+            {
+                var user = await _mediator.Send(new GetUserByIdQuery(id));
+                return user is null ? NotFound("User not found") : Ok(user);
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] UserDto user)
+        {
+            try
+            {
+                bool result = await _mediator.Send(new UpdateUserCommand(id, user));
+
+                return !result ? BadRequest() : Ok();
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                bool result = await _mediator.Send(new DeleteUserCommand(id));
+
+                return !result ? BadRequest() : Ok();
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         // POST api/<UsersController>
@@ -29,14 +84,28 @@ namespace Presentation.Controllers
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] UserDto user)
         {
-            return Ok(await _mediator.Send(new CreateUserCommand(user)));
+            try
+            {
+                return Ok(await _mediator.Send(new CreateUserCommand(user)));
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] UserDto user)
         {
-            return Ok(await _mediator.Send(new LoginUserQuery(user)));
+            try
+            {
+                return Ok(await _mediator.Send(new LoginUserQuery(user)));
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error.");
+            }
         }
     }
 }

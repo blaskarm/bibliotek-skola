@@ -12,8 +12,6 @@ namespace Application.Books.Commands.DeleteBook
 
         public async Task<Result<BookDto>> Handle(DeleteBookCommand request, CancellationToken cancellationToken)
         {
-            //bool success = await _repository.DeleteAsync(request.Id);
-
             if (!await _repository.DeleteAsync(request.Id))
                 return Result<BookDto>.Failure("Book not found");
 

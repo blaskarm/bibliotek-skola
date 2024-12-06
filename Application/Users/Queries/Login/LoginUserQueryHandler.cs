@@ -4,26 +4,25 @@ using MediatR;
 
 namespace Application.Users.Queries.Login
 {
-    public class LoginUserQueryHandler : IRequestHandler<LoginUserQuery, string>
+    public class LoginUserQueryHandler(TokenHelper tokenHelper, IUserRepository repository) : IRequestHandler<LoginUserQuery, string>
     {
-        private readonly IFakeDatabase _database;
-        private readonly TokenHelper _tokenHelper;
+        private readonly TokenHelper _tokenHelper = tokenHelper;
+        private readonly IUserRepository _repository = repository;
 
-        public LoginUserQueryHandler(IFakeDatabase database, TokenHelper tokenHelper)
+        public async Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
         {
-            _database = database;
-            _tokenHelper = tokenHelper;
-        }
+            try
+            {
+                var user = await _repository.LoginUser(request.User.UserName, request.User.Password);
 
-        public Task<string> Handle(LoginUserQuery request, CancellationToken cancellationToken)
-        {
-            var user = _database.Users.FirstOrDefault(user => user.UserName == request.User.UserName &&
-                                                      user.Password == request.User.Password) ??
-                                                      throw new UnauthorizedAccessException("Invalid username or password");
+                string token = _tokenHelper.GenerateJwtToken(user);
 
-            string token = _tokenHelper.GenerateJwtToken(user);
-
-            return Task.FromResult(token);
+                return token;
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return e.Message;
+            }
         }
     }
 }
