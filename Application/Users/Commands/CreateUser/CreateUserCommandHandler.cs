@@ -4,22 +4,24 @@ using MediatR;
 
 namespace Application.Users.Commands.CreateUser
 {
-    public class CreateUserCommandHandler(IFakeDatabase database) : IRequestHandler<CreateUserCommand, bool>
+    public class CreateUserCommandHandler(IUserRepository repository) : IRequestHandler<CreateUserCommand, bool>
     {
-        private readonly IFakeDatabase _database = database;
+        private readonly IUserRepository _repository = repository;
 
-        public Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            User newUser = new()
+            if (await _repository.UserExists(request.User.UserName))
+                return false;
+
+            var user = new User
             {
-                Id = _database.Users.Max(u => u.Id) + 1,
                 UserName = request.User.UserName,
-                Password = request.User.Password
+                Password = request.User.Password,
             };
 
-            _database.Users.Add(newUser);
+            await _repository.AddAsync(user);
 
-            return Task.FromResult(true);
+            return true;
         }
     }
 }

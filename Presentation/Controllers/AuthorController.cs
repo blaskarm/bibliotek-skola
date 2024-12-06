@@ -21,43 +21,79 @@ namespace Presentation.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _mediator.Send(new GetAllAuthorsQuery()));
+            try
+            {
+                return Ok(await _mediator.Send(new GetAllAuthorsQuery()));
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
+            
         }
 
         // GET api/<AuthorController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var author = await _mediator.Send(new GetAuthorByIdQuery(id));
+            try
+            {
+                var author = await _mediator.Send(new GetAuthorByIdQuery(id));
 
-            return author is not null ? Ok(author) : NotFound("Author not found");
+                return author is not null ? Ok(author) : NotFound("Author not found");
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // POST api/<AuthorController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AuthorDto author)
         {
-            Result<AuthorDto> result = await _mediator.Send(new CreateAuthorCommand(author));
+            try
+            {
+                Result<AuthorDto> result = await _mediator.Send(new CreateAuthorCommand(author));
 
-            return result.IsSuccess ? Ok($"({result.Data.Name}) {result.Message}") : BadRequest(result.Message);
+                return result.IsSuccess ? Ok($"({result.Data.Name}) {result.Message}") : BadRequest(result.Message);
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // PUT api/<AuthorController>/5
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] AuthorDto author)
         {
-            Result<AuthorDto> result = await _mediator.Send(new UpdateAuthorCommand(id, author));
+            try
+            {
+                Result<AuthorDto> result = await _mediator.Send(new UpdateAuthorCommand(id, author));
 
-            return result.IsSuccess ? Ok($"({result.Data.Name}) {result.Message}") : BadRequest(result.Message);
+                return result.IsSuccess ? Ok($"({result.Data.Name}) {result.Message}") : BadRequest(result.Message);
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // DELETE api/<AuthorController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            Result<AuthorDto> result = await _mediator.Send(new DeleteAuthorCommand(id));
+            try
+            {
+                Result<AuthorDto> result = await _mediator.Send(new DeleteAuthorCommand(id));
 
-            return result.IsSuccess ? Ok(result.Message) : NotFound(result.Message);
+                return result.IsSuccess ? Ok(result.Message) : NotFound(result.Message);
+            }
+            catch
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
 }

@@ -4,19 +4,14 @@ using MediatR;
 
 namespace Application.Users.Queries.GetAllUsers
 {
-    public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, List<User>>
+    public class GetAllUsersQueryHandler(IUserRepository repository) : IRequestHandler<GetAllUsersQuery, List<User>>
     {
-        private readonly IFakeDatabase _database;
+        private readonly IUserRepository _repository = repository;
 
-        public GetAllUsersQueryHandler(IFakeDatabase database)
+        public async Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            _database = database;
-        }
-
-        public Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
-        {
-            List<User> users = _database.Users;
-            return Task.FromResult(users);
+            IEnumerable<User> users = await _repository.GetAllAsync();
+            return users.ToList();
         }
     }
 }

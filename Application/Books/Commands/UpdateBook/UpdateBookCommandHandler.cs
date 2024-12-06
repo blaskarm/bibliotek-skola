@@ -30,7 +30,7 @@ namespace Application.Books.Commands.UpdateBook
             book.Title = request.Book.Title;
             book.AuthorId = request.Book.AuthorId;
 
-            await _bookRepository.UpdateAsync(request.Id, book);
+            await _bookRepository.UpdateAsync(book);
 
             return Result<BookDto>.Success(request.Book, "Successfully updated book in database");
         }

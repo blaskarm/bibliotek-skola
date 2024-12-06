@@ -44,7 +44,7 @@ namespace Infrastructure.Repositories
             return await _dbSet.FindAsync(id) ?? null!;
         }
 
-        public async Task UpdateAsync(int id, T entity)
+        public async Task UpdateAsync(T entity)
         {
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();

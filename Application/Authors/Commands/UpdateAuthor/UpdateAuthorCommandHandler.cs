@@ -22,7 +22,7 @@ namespace Application.Authors.Commands.UpdateAuthor
 
             
             author.Name = request.Author.Name;
-            await _repository.UpdateAsync(request.Id, author);
+            await _repository.UpdateAsync(author);
 
             return Result<AuthorDto>.Success(request.Author, "Author successfully updated.");
         }

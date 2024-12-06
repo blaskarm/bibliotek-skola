@@ -4,9 +4,9 @@ using MediatR;
 
 namespace Application.Books.Queries.GetBooks
 {
-    public class GetAllBooksQueryHandler(IRepository<Book> repository) : IRequestHandler<GetAllBooksQuery, List<Book>>
+    public class GetAllBooksQueryHandler(IBookRepository repository) : IRequestHandler<GetAllBooksQuery, List<Book>>
     {
-        private readonly IRepository<Book> _repository = repository;
+        private readonly IBookRepository _repository = repository;
 
         public async Task<List<Book>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
