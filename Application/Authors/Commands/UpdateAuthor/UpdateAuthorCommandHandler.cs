@@ -12,7 +12,7 @@ namespace Application.Authors.Commands.UpdateAuthor
 
         public async Task<Result<AuthorDto>> Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
         {
-            Author author = await _repository.FindAsync(request.Id);
+            Author author = await _repository.GetByIdAsync(request.Id);
 
             if (author is null)
                 return Result<AuthorDto>.Failure("Author does not exists.");

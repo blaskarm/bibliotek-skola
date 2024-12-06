@@ -11,7 +11,6 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> AuthorExists(string name)
         {
-            //bool exists = await _context.Authors.AnyAsync(a => a.Name == name);
             return await _context.Authors.AnyAsync(a => a.Name == name);
         }
     }

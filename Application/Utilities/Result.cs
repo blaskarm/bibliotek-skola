@@ -1,5 +1,4 @@
-﻿
-namespace Application.Utilities
+﻿namespace Application.Utilities
 {
     public class Result<T> where T : class
     {
