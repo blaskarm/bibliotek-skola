@@ -25,13 +25,13 @@ namespace Infrastructure.Repositories
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _dbSet.FindAsync(id);
-            if (entity is not null)
-            {
-                _dbSet.Remove(entity);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+
+            if (entity is null)
+                return false;
+
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -48,11 +48,6 @@ namespace Infrastructure.Repositories
         {
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<T> FindAsync(int id)
-        {
-            return await _dbSet.FindAsync(id) ?? null!;
         }
     }
 }

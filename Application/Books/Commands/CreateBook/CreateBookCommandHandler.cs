@@ -13,7 +13,7 @@ namespace Application.Books.Commands.CreateBook
 
         public async Task<Result<BookDto>> Handle(CreateBookCommand command, CancellationToken cancellationToken)
         {
-            if (await _authorRepository.FindAsync(command.Book.AuthorId) is null)
+            if (await _authorRepository.GetByIdAsync(command.Book.AuthorId) is null)
                 return Result<BookDto>.Failure("The author id does not exists in the database");
 
             if (await _bookRepository.BookTitleExists(command.Book.Title))

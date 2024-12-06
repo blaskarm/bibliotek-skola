@@ -13,7 +13,7 @@ namespace Application.Books.Commands.UpdateBook
 
         public async Task<Result<BookDto>> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
         {
-            Book book = await _bookRepository.FindAsync(request.Id);
+            Book book = await _bookRepository.GetByIdAsync(request.Id);
 
             if (book is null)
                 return Result<BookDto>.Failure("Book does not exists");
@@ -21,7 +21,7 @@ namespace Application.Books.Commands.UpdateBook
             if (string.IsNullOrEmpty(request.Book.Title))
                 return Result<BookDto>.Failure("Title cannot be empty");
 
-            if (await _authorRepository.FindAsync(request.Book.AuthorId) is null)
+            if (await _authorRepository.GetByIdAsync(request.Book.AuthorId) is null)
                 return Result<BookDto>.Failure("The author id does not exists in the database");
 
             if (await _bookRepository.BookTitleExists(request.Book.Title))

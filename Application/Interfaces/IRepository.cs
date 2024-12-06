@@ -8,6 +8,5 @@ namespace Application.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(int id, T entity);
         Task<bool> DeleteAsync(int id);
-        Task<T> FindAsync(int id);
     }
 }
