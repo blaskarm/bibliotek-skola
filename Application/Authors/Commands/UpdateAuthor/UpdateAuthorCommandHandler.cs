@@ -20,6 +20,9 @@ namespace Application.Authors.Commands.UpdateAuthor
             if (string.IsNullOrEmpty(request.Author.Name))
                 return Result<AuthorDto>.Failure("Author name cannot be null or empty.");
 
+            if (await _repository.AuthorExists(request.Author.Name))
+                return Result<AuthorDto>.Failure("Author name already exists");
+
             
             author.Name = request.Author.Name;
             await _repository.UpdateAsync(author);

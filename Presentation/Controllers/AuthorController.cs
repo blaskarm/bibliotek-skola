@@ -86,7 +86,7 @@ namespace Presentation.Controllers
         {
             try
             {
-                Result<AuthorDto> result = await _mediator.Send(new DeleteAuthorCommand(id));
+                var result = await _mediator.Send(new DeleteAuthorCommand(id));
 
                 return result.IsSuccess ? Ok(result.Message) : NotFound(result.Message);
             }
