@@ -5,6 +5,7 @@ using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries.GetAllUsers;
 using Application.Users.Queries.GetUserById;
 using Application.Users.Queries.Login;
+using Application.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,9 +55,9 @@ namespace Presentation.Controllers
         {
             try
             {
-                bool result = await _mediator.Send(new UpdateUserCommand(id, user));
+                Result<UserDto> result = await _mediator.Send(new UpdateUserCommand(id, user));
 
-                return !result ? BadRequest() : Ok();
+                return !result.IsSuccess ? BadRequest(result.Message) : Ok(result.Message);
             }
             catch
             {
@@ -69,9 +70,9 @@ namespace Presentation.Controllers
         {
             try
             {
-                bool result = await _mediator.Send(new DeleteUserCommand(id));
+                Result<UserDto> result = await _mediator.Send(new DeleteUserCommand(id));
 
-                return !result ? BadRequest() : Ok();
+                return !result.IsSuccess ? BadRequest(result.Message) : Ok(result.Message);
             }
             catch
             {

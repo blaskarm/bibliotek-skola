@@ -1,17 +1,25 @@
 ﻿using Application.Interfaces;
+using Application.Utilities;
 using Domain.Models;
 using MediatR;
 
 namespace Application.Users.Queries.GetAllUsers
 {
-    public class GetAllUsersQueryHandler(IUserRepository repository) : IRequestHandler<GetAllUsersQuery, List<User>>
+    public class GetAllUsersQueryHandler(IUserRepository repository) : IRequestHandler<GetAllUsersQuery, Result<List<User>>>
     {
         private readonly IUserRepository _repository = repository;
 
-        public async Task<List<User>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<User>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            IEnumerable<User> users = await _repository.GetAllAsync();
-            return users.ToList();
+            try
+            {
+                IEnumerable<User> users = await _repository.GetAllAsync();
+                return Result<List<User>>.Success(users.ToList());
+            }
+            catch
+            {
+                return Result<List<User>>.Failure("Something went wrong");
+            }
         }
     }
 }

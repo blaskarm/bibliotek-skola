@@ -15,7 +15,7 @@ namespace Application.Books.Commands.DeleteBook
             if (!await _repository.DeleteAsync(request.Id))
                 return Result<BookDto>.Failure("Book not found");
 
-            return Result<BookDto>.Success(null!, "Book successfully deleted");
+            return Result<BookDto>.Success(message: "Book successfully deleted");
         }
     }
 }

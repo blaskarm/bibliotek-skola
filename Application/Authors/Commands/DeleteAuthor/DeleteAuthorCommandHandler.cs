@@ -16,7 +16,7 @@ namespace Application.Authors.Commands.DeleteAuthor
             if (!success)
                 return Result<AuthorDto>.Failure("Author not found");
 
-            return Result<AuthorDto>.Success(null!, "Successfully deleted author");
+            return Result<AuthorDto>.Success(message: "Successfully deleted author");
         }
     }
 }
